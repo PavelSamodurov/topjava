@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.util;
 
-import ru.javawebinar.topjava.dao.Dao;
-import ru.javawebinar.topjava.dao.MemoryMealDao;
+import ru.javawebinar.topjava.controller.MealController;
+import ru.javawebinar.topjava.controller.MemoryMealController;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
@@ -20,9 +20,10 @@ public class MealsUtil {
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Dao<Meal> mealDao = MemoryMealDao.getInstance();
+        MealController mealController = new MemoryMealController();
+        List<Meal> meals = mealController.getAll();
 
-        List<Meal> meals = mealDao.getAll();
+
         LocalTime startTime = LocalTime.of(7, 0);
         LocalTime endTime = LocalTime.of(12, 0);
 
