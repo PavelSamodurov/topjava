@@ -51,14 +51,14 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
-                repository.delete(SecurityUtil.authUserId(),id);
+                repository.delete(id,SecurityUtil.authUserId());
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(SecurityUtil.authUserId(),LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        repository.get(SecurityUtil.authUserId(),getId(request));
+                        repository.get(getId(request),SecurityUtil.authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;

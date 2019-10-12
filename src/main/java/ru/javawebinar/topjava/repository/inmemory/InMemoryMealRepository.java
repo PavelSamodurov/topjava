@@ -31,21 +31,21 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public boolean delete(int userID, int id) {
+    public boolean delete(int id, int userId) {
         Meal meal = repository.get(id);
-        return (meal.getUserId() == userID) && repository.remove(id) != null;
+        return (meal.getUserId() == userId) && repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int userID, int id) {
+    public Meal get(int id, int userId) {
         Meal meal = repository.get(id);
-        return (meal.getUserId() == userID)?meal:null;
+        return (meal.getUserId() == userId)?meal:null;
     }
 
     @Override
-    public Collection<Meal> getAll(int userID) {
+    public Collection<Meal> getAll(int userId) {
         return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userID)
+                .filter(meal -> meal.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
