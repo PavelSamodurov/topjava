@@ -5,9 +5,11 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class InMemoryMealRepository implements MealRepository {
     private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
@@ -29,18 +31,23 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
+    public boolean delete(int userID, int id) {
+        Meal meal = repository.get(id);
+        return (meal.getUserId() == userID) && repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.get(id);
+    public Meal get(int userID, int id) {
+        Meal meal = repository.get(id);
+        return (meal.getUserId() == userID)?meal:null;
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values();
+    public Collection<Meal> getAll(int userID) {
+        return repository.values().stream()
+                .filter(meal -> meal.getUserId() == userID)
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .collect(Collectors.toList());
     }
 }
 
