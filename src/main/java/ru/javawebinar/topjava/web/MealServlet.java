@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -71,8 +73,31 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
+                boolean dateTimeFilterOn = true;
+                LocalDate startDate = LocalDate.MIN;
+                LocalDate endDate = LocalDate.MAX;
+                LocalTime startTime = LocalTime.MIN;
+                LocalTime endTime = LocalTime.MAX;
+                if (request.getParameter("startDate") != null && request.getParameter("startDate") != "") {
+                    startDate = LocalDate.parse(request.getParameter("startDate"));
+                    dateTimeFilterOn = true;
+                }
+                if (request.getParameter("endDate") != null && request.getParameter("endDate") != "") {
+                    endDate = LocalDate.parse(request.getParameter("endDate"));
+                    dateTimeFilterOn = true;
+                }
+                if (request.getParameter("startTime") != null && request.getParameter("startTime") != "") {
+                    startTime = LocalTime.parse(request.getParameter("startTime"));
+                    dateTimeFilterOn = true;
+                }
+                if (request.getParameter("endTime") != null && request.getParameter("endTime") != "") {
+                    endTime = LocalTime.parse(request.getParameter("endTime"));
+                    dateTimeFilterOn = true;
+                }
+
+                log.info("Time filters: startDate {}, endDate {}, startTime {}, endTime {}", startDate, endDate, startTime, endTime);
                 request.setAttribute("meals",
-                        mealRestController.getAll());
+                        dateTimeFilterOn ? mealRestController.getAll(startDate, startTime, endDate, endTime) : mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
