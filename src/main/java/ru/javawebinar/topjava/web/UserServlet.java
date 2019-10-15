@@ -1,7 +1,10 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +16,22 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
+    private SecurityUtil securityUtil;
+
     @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
+            securityUtil = appCtx.getBean(SecurityUtil.class);
+        }
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to users");
+
+        String userId = request.getParameter("userId");
+        securityUtil.setAuthUserId(Integer.parseInt(userId));
+        log.debug("authUserIdValue:{}",securityUtil.authUserId());
         request.getRequestDispatcher("/users.jsp").forward(request, response);
     }
 }

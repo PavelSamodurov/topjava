@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
@@ -26,10 +26,12 @@ public class MealRestController {
 
     @Autowired
     private MealService service;
+    @Autowired
+    private SecurityUtil securityUtil;
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
+        return MealsUtil.getTos(service.getAll(securityUtil.authUserId()), authUserCaloriesPerDay());
     }
 
     public List<MealTo> getAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
@@ -43,7 +45,7 @@ public class MealRestController {
 
     public Meal get(int id) {
         log.info("get {}", id);
-        return service.get(id, authUserId());
+        return service.get(id, securityUtil.authUserId());
     }
 
     public Meal create(Meal meal) {
@@ -54,13 +56,13 @@ public class MealRestController {
     public Meal update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
-        checkNotFound(service.get(id, authUserId()), String.format("id = %d for userId = %d", id, authUserId()));
+        checkNotFound(service.get(id, securityUtil.authUserId()), String.format("id = %d for userId = %d", id, securityUtil.authUserId()));
         return service.update(meal);
     }
 
     public void delete(int id) {
         log.info("delete {}", id);
-        service.delete(id, authUserId());
+        service.delete(id, securityUtil.authUserId());
     }
 
 }

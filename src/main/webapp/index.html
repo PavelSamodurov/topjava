@@ -6,9 +6,27 @@
 <body>
 <h3>Проект <a href="https://github.com/JavaWebinar/topjava" target="_blank">Java Enterprise (Topjava)</a></h3>
 <hr>
+<h4>Select User Id:</h4>
+<form name="userId">
+    <p><select name="userIdValues" size="1">
+        <option value="users?userId=1">1</option>
+        <option value="users?userId=2">2</option>
+    </select></p>
+</form>
+
 <ul>
-    <li><a href="users">Users</a></li>
+    <li><a href="javascript:userLink()">Users</a></li>
     <li><a href="meals">Meals</a></li>
 </ul>
+
+<script type="text/javascript">
+    <!--
+    function userLink() {
+        location =
+            document.userId.userIdValues.options[document.userId.userIdValues.selectedIndex].value
+    }
+
+    //-->
+</script>
 </body>
 </html>
