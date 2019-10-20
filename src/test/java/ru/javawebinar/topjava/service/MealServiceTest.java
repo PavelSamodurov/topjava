@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -82,6 +83,11 @@ public class MealServiceTest {
         Meal created = service.create(newMeal, USER_ID);
         newMeal.setId(created.getId());
         assertMatch(service.getAll(USER_ID), newMeal, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+    }
+
+    @Test(expected = DataAccessException.class)
+    public void duplicateDateTimeCreate() {
+        service.create(new Meal(service.get(MEAL1_ID,USER_ID).getDateTime(), "New meal", 5000),USER_ID);
     }
 
     @Test
