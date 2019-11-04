@@ -15,11 +15,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.time.LocalDate;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.getEndExclusive;
-import static ru.javawebinar.topjava.util.DateTimeUtil.getStartInclusive;
-
-@Repository
-public class JdbcMealRepository implements MealRepository {
+abstract public class JdbcMealRepository implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -40,12 +36,14 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     @Override
-    public Meal save(Meal meal, int userId) {
+    abstract public Meal save(Meal meal, int userId);
+
+    public <T> Meal saveDateFormat(Meal meal, int userId, T dateTime){
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", meal.getDateTime())
+                .addValue("date_time", dateTime)
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {
@@ -82,9 +80,11 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getBetweenInclusive(LocalDate startDate, LocalDate endDate, int userId) {
+    abstract public List<Meal> getBetweenInclusive(LocalDate startDate, LocalDate endDate, int userId);
+
+    public <T> List<Meal> getBetweenInclusiveDateFormat(T startDate, T endDate, int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=? AND date_time >=? AND date_time < ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, getStartInclusive(startDate), getEndExclusive(endDate));
+                ROW_MAPPER, userId, startDate, endDate);
     }
 }
