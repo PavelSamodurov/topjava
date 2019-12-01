@@ -30,7 +30,17 @@ $(function () {
                         "asc"
                     ]
                 ]
-            })
+            }),
+        updateTable: updateFilteredTable
         }
     );
 });
+
+function updateFilteredTable() {
+    $.ajax({
+        type: "GET",
+        url: "ajax/profile/meals/filter",
+        data: $("#filter").serialize()
+    }).done(updateTableByData);
+
+}
