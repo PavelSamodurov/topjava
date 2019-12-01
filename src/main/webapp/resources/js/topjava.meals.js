@@ -44,3 +44,11 @@ function updateFilteredTable() {
     }).done(updateTableByData);
 
 }
+
+function clearFilter() {
+    document.getElementById('startDate').value = "";
+    document.getElementById('endDate').value = "";
+    document.getElementById('startTime').value = "";
+    document.getElementById('endTime').value = "";
+    updateFilteredTable()
+}
