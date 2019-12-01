@@ -31,12 +31,12 @@
             </thead>
             <c:forEach items="${meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr>
+                <tr id="${meal.id}">
                     <td><c:out value="${meal.dateTime}"/></td>
                     <td><c:out value="${meal.description}"/></td>
                     <td><c:out value="${meal.calories}"/></td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a class="delete" id="${meal.id}"><span class="fa fa-remove"></span></a></td>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>
